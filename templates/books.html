@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}{{ data.bname[0] }} - 图书管理系统{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename="books.css") }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+    <div class="col-md-3"><img src="{{ data.psrc[0] }}" style="width: 200px; height:300px" id="photo" ></div>
+    <div class="col-md-9">
+    <table id="book">
+        <tr>
+            <td>图书编号:</td>
+            <td>{{ data.bid[0] }}</td>
+        </tr>
+                <tr>
+            <td>图书名称:</td>
+            <td>{{ data.bname[0] }}</td>
+        </tr>
+                <tr>
+            <td>作者:</td>
+            <td>{{ data.author[0] }}</td>
+        </tr>
+                <tr>
+            <td>出版社:</td>
+            <td>{{ data.press[0] }}</td>
+        </tr>
+                <tr>
+            <td>ISBN:</td>
+            <td>{{ data.isbn_code[0] }}</td>
+        </tr>
+                <tr>
+            <td>分类:</td>
+            <td>{{ data.book_class[0] }}</td>
+        </tr>
+                <tr>
+            <td>价格:</td>
+            <td>{{ data.price[0] }}</td>
+        </tr>
+                <tr>
+            <td>数量:</td>
+            <td>{{ data.number[0] }}</td>
+        </tr>
+                        <tr>
+            <td>出版日期:</td>
+            <td>{{ data.Issue_date[0] }}</td>
+        </tr>
+                        <tr>
+            <td>简介:</td>
+            <td>{{ data.introduce[0] }}</td>
+        </tr>
+
+    </table>
+    </div>
+    </div>
+{% endblock %}

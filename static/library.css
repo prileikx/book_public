@@ -1,0 +1,13 @@
+tr{
+    margin: 10px;
+}
+tr td div{
+    height: 30px;
+    text-align: center;
+}
+tr td{
+    border: 30px solid #FFFFFF;
+}
+tr td div a{
+    color: #0f0f0f;
+}

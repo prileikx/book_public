@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template
 import datetime
 from blueprints.exts import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from Model import UserModel, registerForm, captchaModel, usernameCheck
+from Model import UserModel, registerForm, captchaModel, unameCheck,usernameCheck
 
 bp = Blueprint("user", __name__, url_prefix="/user")
 
@@ -25,12 +25,12 @@ def login():
         elif uname.isalnum():
             user_object = db.session.query(UserModel).filter(UserModel.name == uname)
         else:
-            return {"message": ["我们无法识别您的用户名/邮箱/uid,请检查您的输入是否正确"]}
+            return {"message": ["无法识别用户名,请检查您的输入是否正确"]}
         if user_object.first() == None:
             return {"message": ["用户名/邮箱/uid错误"]}
         if check_password_hash(user_object.first().psw, pwd):
             status = 200
-            if rmb_me=="true":
+            if rmb_me == "true":
                 ifsave = True
             else:
                 ifsave = False
@@ -83,6 +83,9 @@ def register():
                     abc.name = na
                     abc.limits = 10
                     db.session.commit()
+                    cap = db.session.query(captchaModel).filter(captchaModel.email == ema).first()
+                    cap.captcha = ""
+                    db.session.commit()
                     return {"name": ["注册成功!用户名:" + na]}
                 else:
                     return {"captcha": ["验证码过期,请重新获取验证码"]}
@@ -90,3 +93,43 @@ def register():
                 return {"captcha": ["验证码错误"]}
         else:
             return form.errors
+
+
+@bp.route('/change_password', methods=['GET', 'POST'])
+def change_password():
+    if request.method == 'GET':
+        return render_template('/change_password.html')
+    else:
+        form = request.form
+        ucheck = unameCheck(request.form)
+        name = form.to_dict()['name']
+        print(ucheck)
+        if ucheck.validate():
+            user_object = db.session.query(UserModel).filter(UserModel.email == name)
+        elif name.isdigit():
+            user_object = db.session.query(UserModel).filter(UserModel.uid == name)
+        elif name.isalnum():
+            user_object = db.session.query(UserModel).filter(UserModel.name == name)
+        else:
+            return {"message": "无法识别该用户"}
+        if (user_object != None):
+            user = user_object.first()
+            email = user.email
+            captcha_object = db.session.query(captchaModel).filter(captchaModel.email == email).first()
+            captcha = form.to_dict()['captcha']
+            if captcha.lower() == captcha_object.captcha.lower():
+                if (datetime.datetime.now() - db.session.query(captchaModel).filter(
+                        captchaModel.email == email).first().captcha_time).total_seconds() < 300:
+                    if len(form.to_dict()['password'])>16 or len(form.to_dict()['password'])<6:
+                        return {"message": ["密码长度不正确"]}
+                    hash_pwd = generate_password_hash(request.form.to_dict()['password'])
+                    user.psw = hash_pwd
+                    db.session.commit()
+                    return {"message": ["密码修改成功!"]}
+                else:
+                    return {"message": ["验证码过期,请重新获取验证码"]}
+            else:
+                return {"captcha": ["验证码错误"]}
+        else:
+            return {"message": ["未找到该用户"]}
+

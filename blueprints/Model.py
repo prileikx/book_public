@@ -12,6 +12,7 @@ class UserModel(db.Model):
     notes = db.Column(db.String(255))
     session = db.Column(db.String(10))
     session_time = db.Column(db.DateTime)
+    verify = db.Column(db.String(10))
 
 def unameJuage(form,filed):
     if filed.data.isalnum()==True:
@@ -34,3 +35,22 @@ class captchaModel(db.Model):
 
 class usernameCheck(wtforms.Form):
     uname_login = wtforms.StringField(validators=[email(message="邮箱格式不正确")])
+
+class unameCheck(wtforms.Form):
+    name = wtforms.StringField(validators=[email(message="邮箱格式不正确")])
+
+class emailCheck(wtforms.Form):
+    email = wtforms.StringField(validators=[email(message="邮箱格式不正确")])
+
+class book_list(db.Model):
+    __tablename__ = "book_list"
+    bid = db.Column(db.Integer,primary_key=True,autoincrement=True)
+    bname = db.Column(db.String(100),nullable=False)
+    author = db.Column(db.String(50),nullable=True)
+    press = db.Column(db.String(30),nullable=False)
+    isbn_code = db.Column(db.String(20),nullable=False)
+    book_class = db.Column(db.String(10),nullable=False)
+    price = db.Column(db.DECIMAL,nullable=False)
+    number = db.Column(db.Integer,nullable=False)
+    Issue_date = db.Column(db.String(10),nullable=False)
+    introduce = db.Column(db.String(255),nullable=True)
