@@ -4,7 +4,8 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static',filename="library.css") }}">
-    <script src="{{ url_for('static',filename="bootstrap-3.4.1-dist/js/library.js") }}"></script>
+    <script src="{{ url_for('static',filename="/js/library.js") }}"></script>
+    <script src="{{ url_for('static',filename="/js/jq-paginator.min.js") }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -12,91 +13,99 @@
         <table>
             <tr>
                 <td>
-                    <img src="#" id="img1" style="width: 200px;height: 300px">
+                    <img src="#" id="img1" class="hidden" style="width: 200px;height: 300px">
                     <div>
-                        <a href="#" id="a1"></a>
+                        <a href="#" class="hidden" id="a1"></a>
                     </div>
                 </td>
                 <td>
-                    <img src="#" id="img2" style="width: 200px;height: 300px">
+                    <img src="#" id="img2" class="hidden" style="width: 200px;height: 300px">
                     <div>
-                        <a href="#" id="a2"></a>
+                        <a href="#" class="hidden" id="a2"></a>
                     </div>
                 </td>
                 <td>
-                    <img src="#" id="img3" style="width: 200px;height: 300px">
+                    <img src="#" id="img3" class="hidden" style="width: 200px;height: 300px">
                     <div>
-                        <a href="#" id="a3"></a>
+                        <a href="#" class="hidden" id="a3"></a>
                     </div>
                 </td>
                 <td>
-                    <img src="#" id="img4" style="width: 200px;height: 300px">
+                    <img src="#" id="img4" class="hidden" style="width: 200px;height: 300px">
                     <div>
-                        <a href="#" id="a4"></a>
+                        <a href="#" class="hidden" id="a4"></a>
                     </div>
                 </td>
                 <td>
-                    <img src="#" id="img5" style="width: 200px;height: 300px">
+                    <img src="#" id="img5" class="hidden" style="width: 200px;height: 300px">
                     <div>
-                        <a href="#" id="a5"></a>
+                        <a href="#" class="hidden" id="a5"></a>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <img src="#" id="img6" style="width: 200px;height: 300px">
+                    <img src="#" id="img6" class="hidden" style="width: 200px;height: 300px">
                     <div>
-                        <a href="#" id="a6"></a>
+                        <a href="#" class="hidden" id="a6"></a>
                     </div>
                 </td>
                 <td>
-                    <img src="#" id="img7" style="width: 200px;height: 300px">
+                    <img src="#" id="img7" class="hidden" style="width: 200px;height: 300px">
                     <div>
-                        <a href="#" id="a7"></a>
+                        <a href="#" class="hidden" id="a7"></a>
                     </div>
                 </td>
                 <td>
-                    <img src="#" id="img8" style="width: 200px;height: 300px">
+                    <img src="#" id="img8" class="hidden" style="width: 200px;height: 300px">
                     <div>
-                        <a href="#" id="a8"></a>
+                        <a href="#" class="hidden" id="a8"></a>
                     </div>
                 </td>
                 <td>
-                    <img src="#" id="img9" style="width: 200px;height: 300px">
+                    <img src="#" id="img9" class="hidden" style="width: 200px;height: 300px">
                     <div>
-                        <a href="#" id="a9"></a>
+                        <a href="#" class="hidden" id="a9"></a>
                     </div>
                 </td>
                 <td>
-                    <img src="#" id="img10" style="width: 200px;height: 300px">
+                    <img src="#" id="img10" class="hidden" style="width: 200px;height: 300px">
                     <div>
-                        <a href="#" id="a10"></a>
+                        <a href="#" class="hidden" id="a10"></a>
                     </div>
                 </td>
             </tr>
         </table>
-        <nav aria-label="Page navigation">
-            <ul class="pagination" id="page_part">
-                <li>
-                    <a href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li id="page1"><a href="#" id="page_a1">1</a></li>
-                <li id="page2"><a href="#" id="page_a2">2</a></li>
-                <li id="page3"><a href="#" id="page_a3">3</a></li>
-                <li id="page4"><a href="#" id="page_a4">4</a></li>
-                <li id="page5"><a href="#" id="page_a5">5</a></li>
-                <li>
-                    <a href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                <li>
-                    <input type="text" style="width: 30px;margin-left:5px;" name="jump_input">
-                    <button class="btn" id="jump_btn">跳转</button>
-                </li>
-            </ul>
-        </nav>
+{#        <nav aria-label="Page navigation">#}
+{#            <ul class="pagination" id="page_part">#}
+{#                <li>#}
+{#                    <a href="#" aria-label="Previous">#}
+{#                        <span aria-hidden="true">&laquo;</span>#}
+{#                    </a>#}
+{#                </li>#}
+{#                <li id="page1"><a href="#" id="page_a1">1</a></li>#}
+{#                <li id="page2"><a href="#" id="page_a2">2</a></li>#}
+{#                <li id="page3"><a href="#" id="page_a3">3</a></li>#}
+{#                <li id="page4"><a href="#" id="page_a4">4</a></li>#}
+{#                <li id="page5"><a href="#" id="page_a5">5</a></li>#}
+{#                <li>#}
+{#                    <a href="#" aria-label="Next">#}
+{#                        <span aria-hidden="true">&raquo;</span>#}
+{#                    </a>#}
+{#                </li>#}
+{#                <li>#}
+{#                    <input type="text" style="width: 30px;margin-left:5px;" name="jump_input">#}
+{#                    <button class="btn" id="jump_btn">跳转</button>#}
+{#                </li>#}
+{#            </ul>#}
+{##}
+{#            <button class="btn btn-primary hidden" style="float: right;margin-top: 22px" id="add_book">添加书籍</button>#}
+{#        </nav>#}
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+  </ul>
+    <button class="btn btn-primary hidden" style="float: right;margin-top: 22px" id="add_book">添加书籍</button>
+<div id="pageshow"></div>
+</nav>
     </div>
 {% endblock %}

@@ -11,7 +11,7 @@ from config import font_path, img_path
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
-
+#检查登录状态
 @bp.route('/check_login_status', methods=['POST'])
 def check_login_status():
     uid = request.cookies.get('uid')
@@ -30,7 +30,7 @@ def check_login_status():
     else:
         return {"status": [201]}
 
-
+#设置uid的cookie
 @bp.route('/set_uid_cookie', methods=['POST'])
 def set_uid_cookie():
     uid = request.form['uid']
@@ -41,7 +41,7 @@ def set_uid_cookie():
     response.set_cookie("username", username, max_age=60 * 60 * 24 * 30)
     return response
 
-
+#设置登录session
 @bp.route('/set_login_session', methods=['POST'])
 def set_login_session():
     uid = request.form['uid']
@@ -56,48 +56,48 @@ def set_login_session():
         session.permanent = False
     return 'session设置成功'
 
-
+#删除session
 @bp.route('del_session', methods=['POST'])
 def del_session():
     if (session['verify']):
         del session['verify']
         return {'message': ['已退出登录']}
 
-
+#设置cookie示例
 @bp.route('/set_cookie')
 def set_cookie():
     response = Response("cookie 设置")
     response.set_cookie("user_uid", "0001")
     return response
 
-
+#获取cookie示例
 @bp.route('/get_cookie')
 def get_cookie():
     user_uid = request.cookies.get("user_uid")
     print("user_uid:", user_uid)
     return "获取cookie"
 
-
+#设置session示例
 @bp.route('/set_session')
 def set_session():
     session['username'] = 'admin'
     session.permanent = True
     return 'session设置成功'
 
-
+#获取session示例
 @bp.route('/get_session')
 def get_session():
     username = session.get('username')
     return '获得username=' + username
 
-
+#生成验证码,传入一个数字生成指定位数的验证码
 @bp.route('/get_captcha')
 def get_cpatcha(number):
     letters = string.ascii_letters + string.digits
     captcha = "".join(random.sample(letters, number))
     return captcha
 
-
+#发送邮件
 @bp.route("/send_email", methods=['POST'])
 def send_mail():
     captcha = get_cpatcha(4)
@@ -139,6 +139,7 @@ def send_mail():
     else:
         return {"email": ["邮件格式不正确"]}
 
+#发送修改密码的邮件
 @bp.route("/send_change_password_email", methods=['POST'])
 def send_change_password_email():
     form = request.form
@@ -177,25 +178,25 @@ def send_change_password_email():
     else:
         return {"message": ["未找到该用户"], "status": ["401"]}
 
-
+#设置图书数量(已废弃)
 @bp.route("/set_book_number", methods=['GET', 'POST'])
 def set_book_number():
-    for i in range(1, 228):
-        book = db.session.query(book_list).filter(book_list.bid == i).first()
+    # for i in range(1, 228):
+    #     book = db.session.query(book_list).filter(book_list.bid == i).first()
         # book.number = random.randint(1, 50)
         # db.session.commit()
     return "ok"
 
-
-@bp.route("/generate_photo", methods=['GET', 'POST'])
-def generate_photo():
+#生成图片,用于生成默认图书的封面
+# @bp.route("/generate_photo", methods=['GET', 'POST'])
+def generate_photo(word,bid):
     # 背景颜色
     bg_colors = ['#747D9E', '#BFB5B4', '#A1C8CD']
     # 字体颜色
     word_colors = ['#9063A4', '#2F1C32', '#0F1418']
     # 设置待生成字符
-    word = request.args.get('word')
-    bid = request.args.get('bid')
+    # word = request.args.get('word')
+    # bid = request.args.get('bid')
     # word = request.form.to_dict['word']
     # bid = request.form.to_dict['bid']
     # word = db.session.query(book_list).filter(book_list.bid == i).first().bname
@@ -209,7 +210,15 @@ def generate_photo():
     image.save(img_save_path)
     return "成功"
 
+#检查是否为管理员,返回200为管理员
+@bp.route("/check_admin",methods=['POST'])
+def check_admin():
+    if check_user_limits(request.cookies.get('uid'),session['verify'],100) == 200:
+        return {"status":[200]}
+    else:
+        return {"status":[502]}
 
+#检查用户权限,传入uid,verify(session)和需要的权限三项来验证是否符合条件
 def check_user_limits(uid, verify, need_limits):  # 传入uid和需要的权限来判断用户是否拥有足够的权限
     user = db.session.query(UserModel).filter(UserModel.uid == uid).first()
     if (user != None):
@@ -222,3 +231,14 @@ def check_user_limits(uid, verify, need_limits):  # 传入uid和需要的权限�
             return "用户已退出登录(用户验证错误)"
     else:
         return "用户不存在"  # check_user_limits(request.cookies.get('uid'),session['verify'],100)
+
+#检查用户session及uid是否对应
+def check_user_is_true(uid,verify):
+    user = db.session.query(UserModel).filter(UserModel.uid == uid).first()
+    if (user != None):
+        if user.verify == verify:
+            return 200  # 用户可以成功访问
+        else:
+            return "用户已退出登录(用户验证错误),请重新登陆以解决此问题"
+    else:
+        return "用户不存在,请重新登陆以解决此问题"  # check_user_limits(request.cookies.get('uid'),session['verify'],100)

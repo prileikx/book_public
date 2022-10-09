@@ -4,55 +4,87 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static',filename="books.css") }}">
+    <script src="{{ url_for('static',filename="/js/books.js") }}"></script>
 {% endblock %}
 
 {% block body %}
     <div class="container">
-    <div class="col-md-3"><img src="{{ data.psrc[0] }}" style="width: 200px; height:300px" id="photo" ></div>
-    <div class="col-md-9">
-    <table id="book">
-        <tr>
-            <td>图书编号:</td>
-            <td>{{ data.bid[0] }}</td>
-        </tr>
+        <div class="col-md-3"><img src="{{ data.psrc[0] }}" style="width: 200px; height:300px" id="photo"></div>
+        <div class="col-md-9">
+            <div style="min-height: 350px">
+                <table id="book">
+                    <tr>
+                        <td>图书编号:</td>
+                        <td id="bid">{{ data.bid[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>图书名称:</td>
+                        <td>{{ data.bname[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>作者:</td>
+                        <td>{{ data.author[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>出版社:</td>
+                        <td>{{ data.press[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>ISBN:</td>
+                        <td>{{ data.isbn_code[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>分类:</td>
+                        <td>{{ data.book_class[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>价格:</td>
+                        <td>{{ data.price[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>数量:</td>
+                        <td>{{ data.number[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>出版日期:</td>
+                        <td>{{ data.Issue_date[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>简介:</td>
+                        <td>{{ data.introduce[0] }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <button class="btn btn-info hidden" id="appointment_book"></button>
+                <button class="btn btn-success hidden" id="fav_book"></button>
+                <span id="if_fav" style="margin-left: 5px"></span>
+                <span id="pre_borrow" style="margin-left: 5px"></span>
+            </div>
+            <div style="margin-top: 10px" class="hidden" id="admin_btn">
+                <button class="btn btn-info" id="edit_book">编辑图书信息</button>
+                <button class="btn btn-info" id="edit_photo">编辑图书封面</button>
+                <button class="btn btn-primary" id="borrow_book">借阅图书</button>
+                <button class="btn btn-warning" id="back_book">归还图书</button>
+                <button class="btn btn-danger" id="back_book">删除图书</button>
+            </div>
+            <table class="table table-striped hidden" style="margin-top: 20px" id="borrow_peo">
                 <tr>
-            <td>图书名称:</td>
-            <td>{{ data.bname[0] }}</td>
-        </tr>
-                <tr>
-            <td>作者:</td>
-            <td>{{ data.author[0] }}</td>
-        </tr>
-                <tr>
-            <td>出版社:</td>
-            <td>{{ data.press[0] }}</td>
-        </tr>
-                <tr>
-            <td>ISBN:</td>
-            <td>{{ data.isbn_code[0] }}</td>
-        </tr>
-                <tr>
-            <td>分类:</td>
-            <td>{{ data.book_class[0] }}</td>
-        </tr>
-                <tr>
-            <td>价格:</td>
-            <td>{{ data.price[0] }}</td>
-        </tr>
-                <tr>
-            <td>数量:</td>
-            <td>{{ data.number[0] }}</td>
-        </tr>
-                        <tr>
-            <td>出版日期:</td>
-            <td>{{ data.Issue_date[0] }}</td>
-        </tr>
-                        <tr>
-            <td>简介:</td>
-            <td>{{ data.introduce[0] }}</td>
-        </tr>
+                    <td>
+                        预约时间
+                    </td>
+                    <td>
+                        借阅时间
+                    </td>
+                    <td>
+                        归还时间
+                    </td>
+                    <td>
+                        操作
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-    </table>
-    </div>
     </div>
 {% endblock %}

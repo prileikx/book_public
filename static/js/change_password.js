@@ -45,7 +45,7 @@ $(document).ready(function () {
             // warn.slideToggle("slow")
             // //滑动下滑3秒后收起
             // setTimeout('$("#warn").slideToggle("slow")', 3000)
-                        Swal.fire({
+            Swal.fire({
                 type: 'info',
                 icon: 'info',
                 title: response.message,

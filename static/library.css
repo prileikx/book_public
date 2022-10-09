@@ -11,3 +11,7 @@ tr td{
 tr td div a{
     color: #0f0f0f;
 }
+table{
+    height: 750px;
+    width: 1180px;
+}
