@@ -26,6 +26,15 @@ $(document).ready(function () {
                         showConfirmButton: false,
                         timer: 1500
                     })
+                $("[name='bname']").val("")
+                $("[name='author']").val("")
+                $("[name='press']").val("")
+                $("[name='isbn_code']").val("")
+                $("[name='book_class']").val("")
+                $("[name='price']").val("")
+                $("[name='number']").val("")
+                $("[name='Issue_date']").val("")
+                $("[name='introduce']").val("")
                 } else {
                     Swal.fire({
                         type: 'error',

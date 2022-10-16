@@ -94,7 +94,7 @@ def register():
         else:
             return form.errors
 
-
+#修改密码
 @bp.route('/change_password', methods=['GET', 'POST'])
 def change_password():
     if request.method == 'GET':
@@ -133,3 +133,12 @@ def change_password():
         else:
             return {"message": ["未找到该用户"]}
 
+#查询用户名
+@bp.route('/query_uname',methods=['POST'])
+def query_uname():
+    uid = request.cookies.get('uid')
+    user = db.session.query(UserModel).filter(UserModel.uid == uid).first()
+    if user == None:
+        return {"status":[404],"uname":[None]}
+    else:
+        return {"status":[200],"uname":[user.name]}

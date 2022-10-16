@@ -24,4 +24,4 @@ PERMANENT_SESSION_LIFETIME=datetime.timedelta(days=30)
 SECRET_KEY='password'
 #图片生成设置
 font_path='D:/project_developer/book_manage/static/SourceHanSansSC-Normal-2.otf'
-img_path='D:/project_developer/book_manage/static/upload/'
+img_path='D:/project_developer/book_manage/static/upload/books/img/'

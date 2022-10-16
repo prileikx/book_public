@@ -1,5 +1,5 @@
 import datetime
-
+from config import img_path
 from api import check_user_limits, generate_photo, check_user_is_true
 from flask import Blueprint, request, render_template, session
 from Model import book_list, UserModel, book_list_Form, book_favourite, book_borrow
@@ -15,7 +15,7 @@ bp = Blueprint("library", __name__, url_prefix="/library")
 def books_bid(bid):
     book_object = db.session.query(book_list).filter(book_list.bid == bid)
     if (book_object.first() == None):
-        psrc = "/static/upload/" + "0.png"
+        psrc = "/static/upload/books/img/" + "0.png"
         data = {"psrc": [psrc],
                 "status": ["404"],
                 "bid": [bid],
@@ -156,11 +156,15 @@ def add_fav():
     fav_time = datetime.datetime.now()
     print(check)
     if check == 200:
-        fav = book_favourite(uid=uid, bid=form['bid'], fav_time=fav_time)
-        db.session.add(fav)
-        db.session.commit()
-        db.session.close()
-        return {"status": [200], "message": ["已添加收藏"], "fav_time": [fav_time.strftime("%Y/%m/%d, %H:%M:%S")]}
+        bid = form['bid']
+        if db.session.query(book_list).filter(book_list.bid == bid).first() != None:
+            fav = book_favourite(uid=uid, bid=form['bid'], fav_time=fav_time)
+            db.session.add(fav)
+            db.session.commit()
+            db.session.close()
+            return {"status": [200], "message": ["已添加收藏"], "fav_time": [fav_time.strftime("%Y/%m/%d, %H:%M:%S")]}
+        else:
+            return {"status": [404], "message": ["该书不存在"]}
     return {"status": [502], "message": [check]}
 
 
@@ -201,8 +205,8 @@ def add_pre_borrow():
                         return {"status": [504], "message": ["书籍无剩余"]}
                     else:
                         book.number = book.number - 1
-                        bbrow = book_borrow(uid=uid, bid=bid, book_status=1, appointment_time=appointment_time)
-                        db.session.add(bbrow)
+                        borrow_msg.appointment_time = appointment_time
+                        borrow_msg.book_status = 1
                         db.session.commit()
                         db.session.close()
                         return {"status": [200], "message": ["成功预约图书"],
@@ -219,8 +223,8 @@ def add_pre_borrow():
                             return {"status": [504], "message": ["书籍无剩余"]}
                         else:
                             book.number = book.number - 1
-                            bbrow = book_borrow(uid=uid, bid=bid, book_status=1, appointment_time=appointment_time)
-                            db.session.add(bbrow)
+                            borrow_msg.appointment_time = appointment_time
+                            borrow_msg.book_status = 1
                             db.session.commit()
                             db.session.close()
                             return {"status": [200], "message": ["成功预约图书"],
@@ -274,7 +278,10 @@ def cancel_pre_borrow():
                 return {"status": [405], "message": ["图书不存在"]}
             else:
                 book.number = book.number + 1
-                db.session.query(book_borrow).filter(and_(book_borrow.uid == uid, book_borrow.bid == bid)).delete()
+                if borrow_msg.borrow_time != None:
+                    borrow_msg.book_status = 0
+                else:
+                    db.session.query(book_borrow).filter(and_(book_borrow.uid == uid, book_borrow.bid == bid)).delete()
                 db.session.commit()
                 db.session.close()
                 return {"status": [200], "message": ["成功取消预约"]}
@@ -287,3 +294,197 @@ def cancel_pre_borrow():
 
     else:
         return {"status": [502], "message": [check]}
+
+
+# 删除图书
+@bp.route("/del_book", methods=['POST'])
+def del_book():
+    form = request.form
+    uid = request.cookies.get('uid')
+    bid = form['bid']
+    check = check_user_limits(request.cookies.get('uid'), session['verify'], 100)
+    if (check == 200):
+        db.session.query(book_list).filter(book_list.bid == bid).delete()
+        db.session.commit()
+        db.session.close()
+        return {"status": [200], "message": ["删除成功"]}
+    else:
+        return {"status": [502], "message": [check]}
+
+
+# 保存编辑图书信息
+@bp.route("/edit_book", methods=['POST'])
+def edit_book():
+    form = request.form
+    uid = request.cookies.get('uid')
+    bid = form['bid']
+    check = check_user_limits(request.cookies.get('uid'), session['verify'], 100)
+    if (check == 200):
+        book = db.session.query(book_list).filter(book_list.bid == bid).first()
+        if (book == None):
+            return {"status": [404], "message": ["书籍不存在,无法保存编辑"]}
+        else:
+            book.bname = form['bname']
+            book.author = form['author']
+            book.price = form['price']
+            book.press = form['press']
+            book.isbn_code = form['isbn_code']
+            book.book_class = form['book_class']
+            book.number = form['number']
+            book.Issue_date = form['Issue_date']
+            book.introduce = form['introduce']
+            db.session.commit()
+            db.session.close()
+            return {"status": [200], "message": ["编辑保存成功"]}
+    else:
+        return {"status": [502], "message": [check]}
+
+
+# 修改书籍封面
+@bp.route('/up_book_photo', methods=['POST'])
+def up_book_photo():
+    check = check_user_limits(request.cookies.get('uid'), session['verify'], 100)
+    if check == 200:
+        img = request.files.get('photo')
+        bid = request.form['bid']
+        suffix = '.' + img.filename.split('.')[-1]  # 获取文件后缀名
+        if suffix == ".png":
+            img_save_str_path = img_path + bid + ".png"
+            print(bid)
+            img.save(img_save_str_path)
+            return {"status": [200], "message": ["上传成功"]}
+        else:
+            return {"status": [502], "message": ["不支持的文件类型,目前仅支持png文件"]}
+    else:
+        return {"status": [502], "message": [check]}
+
+
+# 图书借阅信息
+@bp.route('/borrow_book_msg', methods=['POST'])
+def borrow_book_msg():
+    bid = request.form['bid']
+    check = check_user_limits(request.cookies.get('uid'), session['verify'], 100)
+    if check == 200:
+        books = db.session.query(book_borrow).filter(and_(book_borrow.bid == bid, book_borrow.book_status == 2)).all()
+        book_appointtime = []
+        book_user = []
+        book_borrowtime = []
+        book_back_time = []
+        book_status = []
+        list_number = 0
+        for book in books:
+            if book.appointment_time != None:
+                book_appointtime.append(book.appointment_time.strftime("%Y/%m/%d, %H:%M:%S"))
+            else:
+                book_appointtime.append("-")
+            book_user.append(db.session.query(UserModel).filter(UserModel.uid == book.uid).first().name)
+            if book.borrow_time != None:
+                book_borrowtime.append(book.borrow_time.strftime("%Y/%m/%d, %H:%M:%S"))
+            else:
+                book_borrowtime.append("-")
+            if book.back_time != None:
+                book_back_time.append(book.back_time.strftime("%Y/%m/%d, %H:%M:%S"))
+            else:
+                book_back_time.append("-")
+            book_status.append(book.book_status)
+            list_number = list_number + 1
+        return {"status": [200], "book_user": [book_user], "book_status": [book_status],
+                "book_appointtime": [book_appointtime], "book_borrowtime": [book_borrowtime],
+                'book_back_time': [book_back_time], "list_number": [list_number]}
+    else:
+        return {"status": [502]}
+
+
+# 添加图书借阅信息
+@bp.route('/add_borrow_book', methods=['POST'])
+def add_borrow_book():
+    bid = request.form['bid']
+    uname = request.form['uname']
+    print(uname)
+    if (uname == ""):
+        return {"status": [406], "message": ["请输入用户名"]}
+    if uname.isdigit():
+        uid = uname
+        user = db.session.query(UserModel).filter(UserModel.uid == uid).first()
+        if (user == None):
+            return {"status": [405], "message": ["无法找到该用户,请检查您的输入是否正确"]}
+    elif uname.isalnum():
+        user = db.session.query(UserModel).filter(UserModel.name == uname).first()
+        if (user == None):
+            return {"status": [405], "message": ["无法找到该用户,请检查您的输入是否正确"]}
+        else:
+            uid = user.uid
+    else:
+        return {"status": [405], "message": ["无法找到该用户,请检查您的输入是否正确"]}
+    check = check_user_limits(request.cookies.get('uid'), session['verify'], 100)
+    if check == 200:
+        book = db.session.query(book_list).filter(book_list.bid == bid).first()
+        book_borrow_msg = db.session.query(book_borrow).filter(
+            and_(book_borrow.bid == bid, book_borrow.uid == uid)).first()
+        if book == None:
+            return {"status": [404], "message": ["书籍不存在,无法借阅"]}
+        else:
+            if book.number > 0:
+                if (book_borrow_msg == None):
+                    borrow_time = datetime.datetime.now()
+                    bor_book = book_borrow(uid=uid, bid=bid, book_status=2, borrow_time=borrow_time)
+                    book.number = book.number - 1
+                    db.session.add(bor_book)
+                    db.session.commit()
+                    db.session.close()
+                    return {"status": [200], "message": ["借阅成功"]}
+            else:
+                return {"status": [503], "message": ["书籍无剩余,无法借阅"]}
+        if book_borrow_msg.book_status == 0:
+            if book.number > 0:
+                borrow_time = datetime.datetime.now()
+                book_borrow_msg.book_status = 2
+                book_borrow_msg.borrow_time = borrow_time
+                book_borrow_msg.back_time = None
+                book.number = book.number - 1
+                db.session.commit()
+                db.session.close()
+                return {"status": [200], "message": ["借阅成功"]}
+            else:
+                return {"status": [503], "message": ["书籍无剩余,无法预约"]}
+        elif book_borrow_msg.book_status == 2:
+            return {"status": [504], "message": ["您已借阅该图书,不能重复预约"]}
+        elif book_borrow_msg.book_status == 1:
+            borrow_time = datetime.datetime.now()
+            book_borrow_msg.book_status = 2
+            book_borrow_msg.borrow_time = borrow_time
+            db.session.commit()
+            db.session.close()
+            return {"status": [200], "message": ["借阅成功"]}
+        else:
+            return {"status": [520], "message": ["未知图书状态,请联系系统管理员"]}
+
+
+# 归还图书
+@bp.route('/back_book', methods=['POST'])
+def back_book():
+    form = request.form
+    bid = form['bid']
+    check = check_user_limits(request.cookies.get('uid'), session['verify'], 100)
+    if check == 200:
+        uname = form['uname']
+        uid = db.session.query(UserModel).filter(UserModel.name == uname).first().uid
+        back_time = datetime.datetime.now()
+        book = db.session.query(book_list).filter(book_list.bid == bid).first()
+        if book == None:
+            return {"status": [404], "message": ["该书不存在"]}
+        else:
+            book_borw_msg = db.session.query(book_borrow).filter(book_borrow.bid == bid).first()
+            if book_borw_msg == None:
+                return {"status": [404], "message": ["该用户未借阅该书,无需归还"]}
+            elif book_borw_msg.book_status == 0 or book_borw_msg.book_status == 1:
+                return {"status": [404], "message": ["该用户未借阅该书,无需归还"]}
+            else:
+                book_borw_msg.book_status = 0
+                book_borw_msg.back_time = back_time
+                db.session.commit()
+                db.session.close()
+                return {"status": [200], "message": ["归还成功"]}
+    else:
+        return {"status": [502], "message": [check]}
+

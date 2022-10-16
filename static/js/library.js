@@ -4,7 +4,7 @@ $(document).ready(function () {
     }, function (res) {
         for (i = 1; i <= res.last_book[0]; i++) {
             bid = res.bid[i - 1] + 1
-            $("#img" + i).attr('src', '/static/upload/' + bid + '.png')
+            $("#img" + i).attr('src', '/static/upload/books/img/' + bid + '.png')
             $("#a" + i).text(res.bname[i - 1])
             $("#a" + i).attr('href', '/library/books/' + bid)
             $("#img" + i).removeClass("hidden")
@@ -57,5 +57,4 @@ $(document).ready(function () {
             }
         })
     })
-
 })
