@@ -170,8 +170,6 @@ $(document).ready(function () {
                         type: 'success',
                         icon: 'success',
                         title: res.message[0],
-                        showConfirmButton: false,
-                        timer: 1000
                     })
                     appointment_book.text('取消预约')
                     pre_borrow.text('于' + res.appointment_time[0] + "预约此书")
@@ -182,8 +180,6 @@ $(document).ready(function () {
                             type: 'error',
                             icon: 'error',
                             title: res.message,
-                            showConfirmButton: false,
-                            timer: 2000
                         }
                     )
                 }

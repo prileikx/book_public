@@ -191,7 +191,7 @@ def add_pre_borrow():
                     db.session.add(bbrow)
                     db.session.commit()
                     db.session.close()
-                    return {"status": [200], "message": ["成功预约图书"],
+                    return {"status": [200], "message": ["成功预约图书,预约有效期为3天,请及时去图书馆借阅"],
                             "appointment_time": [appointment_time.strftime("%Y/%m/%d, %H:%M:%S")]}
         else:
             if borrow_msg.book_status == 2:
@@ -249,9 +249,10 @@ def check_book_is_pre_borrow():
             return {"status": [404]}
         else:
             book.number = book.number + 1
-            borrow_msg.delete()
+            db.session.query(book_borrow).filter(and_(book_borrow.uid == uid, book_borrow.bid == bid)).delete()
             db.session.commit()
             db.session.close()
+            return {"status": [200]}
     elif (borrow_msg.book_status == 1 and (
             datetime.datetime.now() - borrow_msg.appointment_time).total_seconds() <= 60 * 60 * 24 * 3):
         return {"status": [201], "appointment_time": [borrow_msg.appointment_time.strftime("%Y/%m/%d, %H:%M:%S")]}
@@ -487,4 +488,5 @@ def back_book():
                 return {"status": [200], "message": ["归还成功"]}
     else:
         return {"status": [502], "message": [check]}
+
 

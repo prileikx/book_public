@@ -3,15 +3,35 @@ import random
 from flask import Blueprint, Response, request, session
 from blueprints.exts import mail
 from flask_mail import Message
-from Model import captchaModel, UserModel, unameCheck, book_list, emailCheck, book_borrow, book_favourite
+from Model import captchaModel, UserModel, unameCheck, book_list,captcha_for_change_email, emailCheck, book_borrow, book_favourite, user_msg
 from blueprints.exts import db
 import datetime
 from PIL import Image, ImageDraw, ImageFont
 from config import font_path, img_path
-from sqlalchemy import and_
+from sqlalchemy import and_, desc,or_
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
+@bp.route('/send_email_for_change_email', methods=['POST'])
+def send_email_for_change_email():
+    uid = request.cookies.get('uid')
+    verify = session.get('verify')
+    check = check_user_is_true(uid, verify)
+    if check == 200:
+        user_captcha = db.session.query(captcha_for_change_email).filter(captcha_for_change_email.uid == uid).first()
+        if user_captcha == None:
+            ucpa = captcha_for_change_email(uid=uid,email=request.form['new_email_send'],captcha=get_cpatcha(4))
+            db.session.add(ucpa)
+            db.session.commit()
+            db.session.close()
+            return {"status": [200]}
+        else:
+            user_captcha.captcha=get_cpatcha(4)
+            db.session.commit()
+            db.session.close()
+            return {"status": [200]}
+    else:
+        return {"status": [502]}
 
 # 检查登录状态
 @bp.route('/check_login_status', methods=['POST'])
@@ -325,27 +345,122 @@ def check_borrow_list():
 # 返回用户的喜爱图书列表
 @bp.route('/my_fav', methods=['POST'])
 def my_fav():
-    print("被调用")
     uid = request.cookies.get('uid')
     verify = session.get('verify')
     check = check_user_is_true(uid, verify)
     if check == 200:
         count = 0
-        books_fav = db.session.query(book_favourite).filter(book_favourite.uid == uid).all()
+        books_fav = db.session.query(book_favourite).filter(book_favourite.uid == uid).order_by(desc('fav_time')).all()
         if books_fav == None:
             return {"status": [204], "message": ["没有收藏图书"]}
         else:
             book_bid = []
             book_name = []
             book_fav_time = []
-            print(books_fav)
             for book in books_fav:
-                print(book.bid)
                 count = count + 1
                 book_bid.append(book.bid)
                 book_name.append(db.session.query(book_list).filter(book_list.bid == book.bid).first().bname)
                 book_fav_time.append(book.fav_time.strftime("%Y/%m/%d, %H:%M:%S"))
             return {"status": [200], "book_bid": book_bid, "book_name": book_name, "book_fav_time": book_fav_time,
-                        "countb": [count]}
+                    "countb": [count]}
     else:
         return {"status": [502], "message": [check]}
+
+
+# 返回图书预约信息
+@bp.route('/pre_borrow_book_msg', methods=['POST'])
+def pre_borrow_book_msg():
+    uid = request.cookies.get('uid')
+    verify = session.get('verify')
+    check = check_user_is_true(uid, verify)
+    if check == 200:
+        books = db.session.query(book_borrow).filter(
+            and_(book_borrow.uid == uid, book_borrow.book_status == 1)).order_by(desc('appointment_time')).all()
+        if books == None:
+            return {"status": [204], "message": ["没有收藏图书"]}
+        else:
+            book_appointtime = []
+            book_name = []
+            book_bid = []
+            list_number = 0
+            for book in books:
+                # 检查图书预约信息是否过期,如果过期就往信息里添加消息,并且把书籍状态设为0
+                if (datetime.datetime.now() - book.appointment_time).total_seconds() > 60 * 60 * 24 * 3:
+                    book_number = db.session.query(book_list).filter(book_list.bid == book.bid).first().number
+                    book_number = book_number + 1
+                    book.appointment_time = None
+                    book.book_status = 0
+                    msg = user_msg(uid=uid, msg="您的预约《" + db.session.query(book_list).filter(
+                        book_list.bid == book.bid).first().bname + "》已过期,请重新预约")
+                    db.session.add(msg)
+                    db.session.commit()
+                    db.session.close()
+                else:
+                    if book.appointment_time != None:
+                        book_appointtime.append(book.appointment_time.strftime("%Y/%m/%d, %H:%M:%S"))
+                    else:
+                        book_appointtime.append("-")
+                    book_bid.append(book.bid)
+                    book_name.append(db.session.query(book_list).filter(book_list.bid == book.bid).first().bname)
+                    list_number = list_number + 1
+            countb = []
+            countb.append(list_number)
+            return {"status": [200], "book_name": book_name, "book_appointtime": book_appointtime, "countb": countb,
+                    "book_bid": book_bid}
+    else:
+        return {"status": [502]}
+
+
+# 返回用户消息
+@bp.route('/my_msg_find', methods=['POST'])
+def my_msg_find():
+    uid = request.cookies.get('uid')
+    verify = session.get('verify')
+    check = check_user_is_true(uid, verify)
+    if check == 200:
+        msg_all = db.session.query(user_msg).filter(or_(user_msg.uid == uid,user_msg.uid == 37)).order_by(desc('mid')).all()
+        user_msg_list = []
+        list_number = 0
+        for msg_p in msg_all:
+            user_msg_list.append(msg_p.msg)
+            list_number = list_number + 1
+        countb = []
+        countb.append(list_number)
+        return {"status": [200], "msg": user_msg_list, "countb": countb}
+    else:
+        return {"status": [502]}
+
+
+# 返回图书借阅信息
+@bp.route('/borrow_book_msg', methods=['POST'])
+def borrow_book_msg():
+    uid = request.cookies.get('uid')
+    verify = session.get('verify')
+    check = check_user_is_true(uid, verify)
+    if check == 200:
+        books = db.session.query(book_borrow).filter(
+            and_(book_borrow.uid == uid, book_borrow.book_status == 2)).order_by(desc('borrow_time')).all()
+        if books == None:
+            return {"status": [204], "message": ["没有借阅图书"]}
+        else:
+            book_borrowtime = []
+            book_name = []
+            book_bid = []
+            list_number = 0
+            book_back_time = []
+            for book in books:
+                if book.back_time != None:
+                    book_back_time.append(book.back_time.strftime("%Y/%m/%d, %H:%M:%S"))
+                else:
+                    book_back_time.append("-")
+                book_bid.append(book.bid)
+                book_name.append(db.session.query(book_list).filter(book_list.bid == book.bid).first().bname)
+                list_number = list_number + 1
+                book_borrowtime.append(book.borrow_time.strftime("%Y/%m/%d, %H:%M:%S"))
+            countb = []
+            countb.append(list_number)
+            return {"status": [200], "book_name": book_name,"book_back_time":book_back_time, "book_borrowtime": book_borrowtime, "countb": countb,
+                    "book_bid": book_bid}
+    else:
+        return {"status": [502]}

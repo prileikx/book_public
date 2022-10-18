@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}书库 - 图书管理系统{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename="library.css") }}">
+    <script src="{{ url_for('static',filename="/js/search.js") }}"></script>
+    <script src="{{ url_for('static',filename="/js/jq-paginator.min.js") }}"></script>
+{% endblock %}
+
+{% block body %}
+    <script>
+        $("#nav_search").html("")
+    </script>
+    <div class="container" style="width: 1140px">
+        <form class="navbar-form" style="width: 900px;margin: 0 auto" action="/search" id="f1">
+            <div class="form-group">
+                <input type="text" class="form-control hidden" id="page" name="page" value="1" form="f1">
+                <input type="text" value="{{ data.search_text }}" class="form-control" id="search_text"
+                       name="search_text" placeholder="输入内容搜索图书" style="width: 800px" form="f1">
+                <button class="btn btn-default" id="search_btn" form="f2">搜索</button>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="choose" id="bname" value="bname" form="f1" checked>
+                        通过书名查询
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="choose" id="author" value="author" form="f1">
+                        通过作者查询
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="choose" id="press" value="press" form="f1">
+                        通过出版社查询
+                    </label>
+                </div>
+            </div>
+        </form>
+        <table>
+            <tr>
+                <td>
+                    <div style="width: 200px;height: 300px">
+                        <img src="#" id="img1" class="hidden" style="width: 200px;height: 300px">
+                        <div>
+                            <a href="#" class="hidden" id="a1"></a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="width: 200px;height: 300px">
+                        <img src="#" id="img2" class="hidden" style="width: 200px;height: 300px">
+                        <div>
+                            <a href="#" class="hidden" id="a2"></a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="width: 200px;height: 300px">
+                        <img src="#" id="img3" class="hidden" style="width: 200px;height: 300px">
+                        <div>
+                            <a href="#" class="hidden" id="a3"></a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="width: 200px;height: 300px">
+                        <img src="#" id="img4" class="hidden" style="width: 200px;height: 300px">
+                        <div>
+                            <a href="#" class="hidden" id="a4"></a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="width: 200px;height: 300px">
+                        <img src="#" id="img5" class="hidden" style="width: 200px;height: 300px">
+                        <div>
+                            <a href="#" class="hidden" id="a5"></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div style="width: 200px;height: 300px">
+                        <img src="#" id="img6" class="hidden" style="width: 200px;height: 300px">
+                        <div>
+                            <a href="#" class="hidden" id="a6"></a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="width: 200px;height: 300px">
+                        <img src="#" id="img7" class="hidden" style="width: 200px;height: 300px">
+                        <div>
+                            <a href="#" class="hidden" id="a7"></a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="width: 200px;height: 300px">
+                        <img src="#" id="img8" class="hidden" style="width: 200px;height: 300px">
+                        <div>
+                            <a href="#" class="hidden" id="a8"></a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="width: 200px;height: 300px">
+                        <img src="#" id="img9" class="hidden" style="width: 200px;height: 300px">
+                        <div>
+                            <a href="#" class="hidden" id="a9"></a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="width: 200px;height: 300px">
+                        <img src="#" id="img10" class="hidden" style="width: 200px;height: 300px">
+                        <div>
+                            <a href="#" class="hidden" id="a10"></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <nav aria-label="Page navigation" id="page_list">
+            <ul class="pagination">
+            </ul>
+            <button class="btn btn-primary hidden" style="float: right;margin-top: 22px" id="add_book">添加书籍</button>
+            <div id="pageshow"></div>
+        </nav>
+    </div>
+    <script>
+        $("#{{ data.choose }}").attr("checked", true)
+        $(document).ready(function () {
+            $("#search_btn").click(function () {
+                for (i = 1; i <= 10; i++) {
+                    $("#img" + i).addClass("hidden")
+                    $("#a" + i).addClass("hidden")
+                }
+                $("#page_list").addClass("hidden")
+                $.ajax({
+                    url: "/search",
+                    type: "post",
+                    data: {
+                        choose: $("[name='choose']:checked").val(),
+                        search_text: $('#search_text').val(),
+                        page: 1,
+                    },
+                    success: function (res) {
+                        if ($('#search_text').val() == "") {
+                            swal.fire({
+                                title: "请输入内容进行查询"
+                            })
+                        } else if (res.result_number == 0) {
+                            swal.fire({
+                                title: "无法通过您的输入查询到任何书籍"
+                            })
+                        } else {
+                            for (i = 1; i <= res.result_number; i++) {
+                                bid = res.bid[i - 1]
+                                $("#img" + i).attr('src', '/static/upload/books/img/' + bid + '.png')
+                                $("#a" + i).text(res.bname[i - 1])
+                                $("#a" + i).attr('href', '/library/books/' + bid)
+                                $("#img" + i).removeClass("hidden")
+                                $("#a" + i).removeClass("hidden")
+                            }
+                            $("#page_list").removeClass("hidden")
+                            $('.pagination').jqPaginator({
+                                totalCounts: res.result_number,
+                                pageSize: 10,
+                                visiblePages: 10,
+                                currentPage: 1,
+                                onPageChange: function (num, type) {
+                                    for (i = 1; i <= 10; i++) {
+
+                                        $("#img" + i).addClass("hidden")
+                                        $("#a" + i).addClass("hidden")
+                                    }
+                                    $.ajax({
+                                            url: "/search",
+                                            type: 'post',
+                                            data: {
+                                                choose: $("[name='choose']:checked").val(),
+                                                search_text: $('#search_text').val(),
+                                                page: num,
+                                            },
+                                            success: function (res) {
+                                                    this_page_book_number = res.result_number
+                                                if(res.result_number<num*10) {
+                                                    if (res.result_number%10!=0){
+                                                        this_page_book_number = res.result_number%10
+                                                    }
+                                                    else {
+                                                        this_page_book_number=10
+                                                    }
+                                                }
+                                                for (i = 1; i <= this_page_book_number; i++) {
+                                                    bid = res.bid[i - 1]
+                                                    $("#img" + i).attr('src', '/static/upload/books/img/' + bid + '.png')
+                                                    $("#a" + i).text(res.bname[i - 1])
+                                                    $("#a" + i).attr('href', '/library/books/' + bid)
+                                                    $("#img" + i).removeClass("hidden")
+                                                    $("#a" + i).removeClass("hidden")
+                                                }
+                                            }
+                                        }
+                                    )
+                                }
+                            })
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock %}

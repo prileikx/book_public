@@ -82,3 +82,15 @@ class book_favourite(db.Model):
     uid = db.Column(db.Integer,nullable=False)
     bid = db.Column(db.Integer,nullable=False)
     fav_time = db.Column(db.DateTime)
+
+class user_msg(db.Model):
+    __tablename__ = "user_msg"
+    mid = db.Column(db.Integer,primary_key=True,autoincrement=True)
+    uid = db.Column(db.Integer,nullable=False)
+    msg = db.Column(db.VARCHAR(255),nullable=False)
+
+class captcha_for_change_email(db.Model):
+    __tablename__ = "captcha_for_change_email"
+    uid = db.Column(db.Integer,nullable=False,primary_key=True)
+    email = db.Column(db.String(40),nullable=False)
+    captcha = db.Column(db.String(4),nullable=False)
