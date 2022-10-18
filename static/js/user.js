@@ -192,10 +192,12 @@ $(document).ready(function () {
             },
         }).then((res) => {
             if (res.value) {
+                let formDateObj = new FormData();
+                                    formDateObj.append('new_email_send', $("#new_email_send").val())
                 $.ajax({
                     url: '/api/send_email_for_change_email',
                     type: 'post',
-                    data:{"new_email_send":$("#new_email_send").val()},
+                                        data: formDateObj,
                     contentType: false,
                     processData: false,
                     success: function (response) {

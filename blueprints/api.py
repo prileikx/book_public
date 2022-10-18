@@ -18,20 +18,37 @@ def send_email_for_change_email():
     verify = session.get('verify')
     check = check_user_is_true(uid, verify)
     if check == 200:
-        user_captcha = db.session.query(captcha_for_change_email).filter(captcha_for_change_email.uid == uid).first()
-        if user_captcha == None:
-            ucpa = captcha_for_change_email(uid=uid,email=request.form['new_email_send'],captcha=get_cpatcha(4))
-            db.session.add(ucpa)
-            db.session.commit()
-            db.session.close()
-            return {"status": [200]}
+        email = request.form['new_email_send']
+        captcha = get_cpatcha(4)
+        if db.session.query(UserModel).filter(UserModel.email == email).first() == None:
+            user_captcha = db.session.query(captcha_for_change_email).filter(captcha_for_change_email.uid == uid).first()
+            if user_captcha == None:
+                ucpa = captcha_for_change_email(uid=uid,email=email,captcha=captcha)
+                db.session.add(ucpa)
+                db.session.commit()
+                db.session.close()
+                message = Message(
+                    subject="[book manage]修改邮箱验证码",
+                    recipients=[email],
+                    body=f"[测试邮件]您的修改邮箱验证码是:{captcha}"
+                )
+                mail.send(message)
+                return {"status": [200]}
+            else:
+                user_captcha.captcha=captcha
+                db.session.commit()
+                db.session.close()
+                message = Message(
+                    subject="[book manage]注册验证码",
+                    recipients=[email],
+                    body=f"[测试邮件]您的注册验证码是:{captcha}"
+                )
+                mail.send(message)
+                return {"status": [200]}
         else:
-            user_captcha.captcha=get_cpatcha(4)
-            db.session.commit()
-            db.session.close()
-            return {"status": [200]}
+            return {"status": [502],"message":["该邮箱已被注册,无法修改为此邮箱"]}
     else:
-        return {"status": [502]}
+        return {"status": [502],"message":[check]}
 
 # 检查登录状态
 @bp.route('/check_login_status', methods=['POST'])

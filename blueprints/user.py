@@ -9,6 +9,27 @@ from sqlalchemy import and_, desc,or_
 
 bp = Blueprint("user", __name__, url_prefix="/user")
 
+@bp.route("/change_email",methods=['POST'])
+def change_email():
+    uid = request.cookies.get('uid')
+    verify = session.get('verify')
+    check = check_user_is_true(uid, verify)
+    if check == 200:
+        captcha = request.form['captcha_for_change_email']
+        captcha_for_chge_email_model=db.session.query(captcha_for_change_email).filter(captcha_for_change_email.uid == uid).first()
+        if captcha.lower() == captcha_for_chge_email_model.captcha.lower():
+            user = db.session.query(UserModel).filter(UserModel.uid == uid).first()
+            user.email = captcha_for_chge_email_model.email
+            db.session.commit()
+            db.session.close()
+            return {"status": [200], "message": ["邮箱修改成功"]}
+        else:
+            return {"status": [502], "message": ["验证码错误"]}
+    else:
+        return {"status": [502], "message": [check]}
+
+
+
 @bp.route("/change_uname",methods=['POST'])
 def change_uname():
     uid = request.cookies.get('uid')

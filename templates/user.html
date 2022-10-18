@@ -86,10 +86,10 @@
             {% if data.status == 203 %}
                 <div style="display: inline-block">
                     <table>
-                        <tr style="min-width: 60px">图书编号</tr>
+                        <tr style="min-width: 60px;">图书编号</tr>
                         {% for book_bid in data.book_bid %}
                             <tr>
-                                <td>{{ book_bid }}</td>
+                                <td style="border: 1px solid black;min-width: 56px">{{ book_bid }}</td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -99,7 +99,7 @@
                         <tr style="min-width: 300px">书籍名称</tr>
                         {% for bname in data.book_name %}
                             <tr>
-                                <td>
+                                <td style="border: 1px solid black">
                                     {{ bname }}
                                 </td>
                             </tr>
@@ -111,7 +111,7 @@
                         <tr style="min-width: 200px">书籍收藏时间</tr>
                         {% for bapt in data.book_fav_time %}
                             <tr>
-                                <td style="text-align: center">{{ bapt }}</td>
+                                <td style="text-align: center;border: 1px solid black">{{ bapt }}</td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -123,7 +123,7 @@
                         <tr style="min-width: 60px">图书编号</tr>
                         {% for book_bid in data.book_bid %}
                             <tr>
-                                <td>{{ book_bid }}</td>
+                                <td style="border: 1px solid black;min-width: 56px">{{ book_bid }}</td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -133,7 +133,7 @@
                         <tr style="min-width: 300px">书籍名称</tr>
                         {% for bname in data.book_name %}
                             <tr>
-                                <td>
+                                <td style="border: 1px solid black">
                                     {{ bname }}
                                 </td>
                             </tr>
@@ -145,7 +145,7 @@
                         <tr style="min-width: 200px">书籍预约时间</tr>
                         {% for bapt in data.book_appointtime %}
                             <tr>
-                                <td style="text-align: center">{{ bapt }}</td>
+                                <td style="text-align: center;border: 1px solid black">{{ bapt }}</td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -157,7 +157,7 @@
                         <tr style="min-width: 60px">图书编号</tr>
                         {% for book_bid in data.book_bid %}
                             <tr>
-                                <td>{{ book_bid }}</td>
+                                <td style="min-width: 56px;border: 1px solid black">{{ book_bid }}</td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -167,7 +167,7 @@
                         <tr style="min-width: 300px">书籍名称</tr>
                         {% for bname in data.book_name %}
                             <tr>
-                                <td>
+                                <td style="border: 1px solid black">
                                     {{ bname }}
                                 </td>
                             </tr>
@@ -179,21 +179,21 @@
                         <tr style="min-width: 200px">书籍借阅时间</tr>
                         {% for bapt in data.book_borrowtime %}
                             <tr>
-                                <td style="text-align: center">{{ bapt }}</td>
+                                <td style="text-align: center;border: 1px solid black">{{ bapt }}</td>
                             </tr>
                         {% endfor %}
                     </table>
                 </div>
-                <div style="display: inline-block">
-                    <table>
-                        <tr style="min-width: 200px">书籍归还时间</tr>
-                        {% for bapt in data.book_back_time %}
-                            <tr>
-                                <td style="text-align: center">{{ bapt }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
+{#                <div style="display: inline-block">#}
+{#                    <table>#}
+{#                        <tr style="min-width: 200px">书籍归还时间</tr>#}
+{#                        {% for bapt in data.book_back_time %}#}
+{#                            <tr>#}
+{#                                <td style="text-align: center;border: 1px solid black">{{ bapt }}</td>#}
+{#                            </tr>#}
+{#                        {% endfor %}#}
+{#                    </table>#}
+{#                </div>#}
             {% endif %}
 
             {% if data.status == 206 %}
