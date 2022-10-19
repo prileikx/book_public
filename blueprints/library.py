@@ -475,10 +475,12 @@ def back_book():
         if book == None:
             return {"status": [404], "message": ["该书不存在"]}
         else:
-            book_borw_msg = db.session.query(book_borrow).filter(book_borrow.bid == bid).first()
+            book_borw_msg = db.session.query(book_borrow).filter(and_(book_borrow.bid == bid,book_borrow.uid == uid)).first()
             if book_borw_msg == None:
                 return {"status": [404], "message": ["该用户未借阅该书,无需归还"]}
             elif book_borw_msg.book_status == 0 or book_borw_msg.book_status == 1:
+                print(uid)
+                print("运行到这里2")
                 return {"status": [404], "message": ["该用户未借阅该书,无需归还"]}
             else:
                 book_borw_msg.book_status = 0

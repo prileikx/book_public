@@ -12,6 +12,20 @@ from sqlalchemy import and_, desc,or_
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
+@bp.route('/new_sys_msg',methods=['POST'])
+def new_sys_msg():
+    check = check_user_limits(request.cookies.get('uid'), session['verify'], 100)
+    if (check == 200):
+        msg="系统公告:"+request.form['sys_msg']
+        print(msg)
+        new_msg = user_msg(uid=37,msg=msg)
+        db.session.add(new_msg)
+        db.session.commit()
+        db.session.close()
+        return {"status":[200],"message":["成功"]}
+    else:
+        return {"status": [502], "message": ["权限不足"]}
+
 @bp.route('/send_email_for_change_email', methods=['POST'])
 def send_email_for_change_email():
     uid = request.cookies.get('uid')

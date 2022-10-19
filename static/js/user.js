@@ -1,21 +1,97 @@
 $(document).ready(function () {
     $("#user_msg").click(function () {
-        window.location.href = "/user/account?choose=user_msg"
+        window.location.href = "/user/account?choose=user_msg&mark=1"
     })
     $("#account_manage").click(function () {
-        window.location.href = "/user/account?choose=account_manage"
+        window.location.href = "/user/account?choose=account_manage&mark=1"
     })
     $("#my_fav").click(function () {
-        window.location.href = "/user/account?choose=my_fav"
+        window.location.href = "/user/account?choose=my_fav&mark=1"
     })
     $("#my_pre_borrow").click(function () {
-        window.location.href = "/user/account?choose=my_pre_borrow"
+        window.location.href = "/user/account?choose=my_pre_borrow&mark=1"
     })
     $("#my_borrow").click(function () {
-        window.location.href = "/user/account?choose=my_borrow"
+        window.location.href = "/user/account?choose=my_borrow&mark=1"
     })
     $("#my_msg").click(function () {
-        window.location.href = "/user/account?choose=my_msg"
+        window.location.href = "/user/account?choose=my_msg&mark=1"
+    })
+        $.post('/api/check_admin', {}, function (res) {
+        if (res.status[0] == 200) {
+            $('#send_sysmsg').removeClass("hidden")
+        }
+    })
+    $('#send_sysmsg').click(function () {
+                Swal.fire({
+            title: '修改用户名',
+            html: `
+            <form method="post" id="up1">
+            <label>输入系统公告:
+            <input type="text" name="password_confirm" id="sys_msg" form="up1">
+            </label>
+            </form>
+            `,
+            showCancelButton: true,
+            showConfirmButton: true,
+            confirmButtonText: '确认',
+            cancelButtonText: "取消",
+            preConfirm: function () {
+                return new Promise((resolve, reject) => {
+                    resolve({
+                        sys_msg: $("#sys_msg").val(),
+                    })
+                })
+            },
+        }).then((res) => {
+            if (res.value) {
+                let formDateObj = new FormData();
+                formDateObj.append('sys_msg', $("#sys_msg").val())
+                $.ajax({
+                    url: '/api/new_sys_msg',
+                    type: 'post',
+                    data: formDateObj,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.status[0] == 200) {
+                            setTimeout("location.reload(true)", 1000)
+                            Swal.fire(
+                                {
+                                    type: 'success',
+                                    icon: 'success',
+                                    title: response.message[0],
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                }
+                            )
+                        } else {
+                            Swal.fire(
+                                {
+                                    type: 'error',
+                                    icon: 'error',
+                                    title: response.message[0],
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                }
+                            )
+                        }
+
+                    },
+                    error: function () {
+                        Swal.fire(
+                            {
+                                type: 'error',
+                                icon: 'error',
+                                title: "请求发送失败",
+                                showConfirmButton: false,
+                                timer: 2000
+                            }
+                        )
+                    }
+                })
+            }
+        })
     })
     $("#change_username_btn").click(function () {
         Swal.fire({

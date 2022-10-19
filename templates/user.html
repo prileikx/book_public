@@ -100,7 +100,9 @@
                         {% for bname in data.book_name %}
                             <tr>
                                 <td style="border: 1px solid black">
+                                    <a class="fav_bname" style="color: black">
                                     {{ bname }}
+                                        </a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -116,6 +118,18 @@
                         {% endfor %}
                     </table>
                 </div>
+                <script>
+                $(document).ready(function () {
+                    $.get("/user/account",{"choose":"my_fav","mark":"js"},function (res) {
+                        countb =  {{ data.countb }}
+                        for (i = 0; i <countb; i++) {
+                            urlset = "/library/books/"+res.book_bid[i]
+                            console.log(res.book_bid[i])
+                            fav_bname=$(".fav_bname:eq("+i+")").attr("href",urlset)
+                        }
+                    })
+                })
+                </script>
             {% endif %}
             {% if data.status == 204 %}
                 <div style="display: inline-block">
@@ -134,7 +148,9 @@
                         {% for bname in data.book_name %}
                             <tr>
                                 <td style="border: 1px solid black">
+                                    <a class="pre_borrow_bname" style="color: black">
                                     {{ bname }}
+                                        </a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -150,6 +166,18 @@
                         {% endfor %}
                     </table>
                 </div>
+                <script>
+                $(document).ready(function () {
+                    $.get("/user/account",{"choose":"my_pre_borrow","mark":"js"},function (res) {
+                        countb =  {{ data.countb }}
+                        for (i = 0; i <countb; i++) {
+                            urlset = "/library/books/"+res.book_bid[i]
+                            console.log(res.book_bid[i])
+                            fav_bname=$(".pre_borrow_bname:eq("+i+")").attr("href",urlset)
+                        }
+                    })
+                })
+                </script>
             {% endif %}
             {% if data.status == 205 %}
                 <div style="display: inline-block">
@@ -168,7 +196,9 @@
                         {% for bname in data.book_name %}
                             <tr>
                                 <td style="border: 1px solid black">
+                                    <a class="borrow_bname" style="color: black">
                                     {{ bname }}
+                                        </a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -194,6 +224,18 @@
 {#                        {% endfor %}#}
 {#                    </table>#}
 {#                </div>#}
+                <script>
+                $(document).ready(function () {
+                    $.get("/user/account",{"choose":"my_borrow","mark":"js"},function (res) {
+                        countb =  {{ data.countb }}
+                        for (i = 0; i <countb; i++) {
+                            urlset = "/library/books/"+res.book_bid[i]
+                            console.log(res.book_bid[i])
+                            fav_bname=$(".borrow_bname:eq("+i+")").attr("href",urlset)
+                        }
+                    })
+                })
+                </script>
             {% endif %}
 
             {% if data.status == 206 %}
@@ -209,6 +251,7 @@
                             </tr>
                         {% endfor %}
                     </table>
+                <button class="btn btn-warning hidden" id="send_sysmsg">发送系统公告</button>
                 </div>
 
             {% endif %}

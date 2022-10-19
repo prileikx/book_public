@@ -128,7 +128,10 @@ def user():
                         "book_fav_time": ["-"],
                         "countb": 1
                     }
-                    return render_template('/user.html', data=data)
+                    if request.args.to_dict()['mark'] == "js":
+                        return data
+                    else:
+                        return render_template('/user.html', data=data)
                 else:
                     book_bid = []
                     book_name = []
@@ -146,7 +149,10 @@ def user():
                     "book_fav_time": book_fav_time,
                     "countb": count
                 }
-                return render_template('/user.html', data=data)
+                if request.args['mark'] == "js":
+                    return data
+                else:
+                    return render_template('/user.html', data=data)
             elif request.args['choose'] == "my_pre_borrow":
                 books = db.session.query(book_borrow).filter(
                     and_(book_borrow.uid == uid, book_borrow.book_status == 1)).order_by(desc('appointment_time')).all()
@@ -159,7 +165,10 @@ def user():
                         "countb": 1,
                         "book_bid": [0]
                     }
-                    return render_template('/user.html', data=data)
+                    if request.args['mark'] == "js":
+                        return data
+                    else:
+                        return render_template('/user.html', data=data)
                 else:
                     book_appointtime = []
                     book_name = []
@@ -196,7 +205,10 @@ def user():
                         "countb": countb,
                         "book_bid": book_bid
                     }
-                    return render_template('/user.html', data=data)
+                    if request.args['mark'] == "js":
+                        return data
+                    else:
+                        return render_template('/user.html', data=data)
             elif request.args['choose'] == "my_borrow":
                 books = db.session.query(book_borrow).filter(
                     and_(book_borrow.uid == uid, book_borrow.book_status == 2)).order_by(desc('borrow_time')).all()
@@ -210,7 +222,10 @@ def user():
                         "countb": 1,
                         "book_bid": [0]
                     }
-                    return render_template('/user.html', data=data)
+                    if request.args['mark'] == "js":
+                        return data
+                    else:
+                        return render_template('/user.html', data=data)
                 else:
                     book_borrowtime = []
                     book_name = []
@@ -237,7 +252,10 @@ def user():
                         "countb": countb,
                         "book_bid": book_bid
                     }
-                    return render_template('/user.html', data=data)
+                    if request.args['mark'] == "js":
+                        return data
+                    else:
+                        return render_template('/user.html', data=data)
             elif request.args['choose'] == "my_msg":
                 msg_all = db.session.query(user_msg).filter(or_(user_msg.uid == uid,user_msg.uid == 37)).order_by(desc('mid')).all()
                 user_msg_list = []
