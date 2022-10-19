@@ -19,6 +19,8 @@ def change_email():
         captcha_for_chge_email_model=db.session.query(captcha_for_change_email).filter(captcha_for_change_email.uid == uid).first()
         if captcha.lower() == captcha_for_chge_email_model.captcha.lower():
             user = db.session.query(UserModel).filter(UserModel.uid == uid).first()
+            captcha_model = db.session.query(captchaModel).filter(captchaModel.uid == uid).first()
+            captcha_model.email=captcha_for_chge_email_model.email
             user.email = captcha_for_chge_email_model.email
             db.session.commit()
             db.session.close()

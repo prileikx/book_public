@@ -218,7 +218,7 @@ def send_change_password_email():
     else:
         print(ucheck.errors)
         return {"message": ["未能识别到用户"], "status": ["402"]}
-    if (user_object != None):
+    if (user_object.first() != None):
         user = user_object.first()
         uid = user.uid
         email = user.email

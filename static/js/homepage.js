@@ -23,7 +23,7 @@ $(document).ready(function () {
                     html += "<td style='text-align: left;width: 415px;max-width: 415px;border-right: 1px solid #c2c2d6;border-bottom: 1px solid #c2c2d6'><a style='color: #0f0f0f;overflow: hidden;' href='/library/books/" + res.book_bid[i] + "'>" + res.book_name[i] + "</a></td><td style='text-align: center;border-bottom: 1px solid #c2c2d6;width: 134px'>" + res.book_fav_time[i] + "</td></tr>"
                 }
                 if (show_more == true) {
-                    html += "<tr><td><a href='/user/fav_book'>[更多...]</a></td></tr></table>"
+                    html += "<tr><td><a href='/user/account?choose=my_fav&mark=1'>[更多...]</a></td></tr></table>"
                 }
                 $("#my_fav").html(html)
             } else {
@@ -55,7 +55,7 @@ $(document).ready(function () {
                     html += "<td style='text-align: left;width: 415px;border-right: 1px solid #c2c2d6;border-bottom: 1px solid #c2c2d6;max-width: 415px;'><a style='color: #0f0f0f' href='/library/books/" + res.book_bid[i] + "'>" + res.book_name[i] + "</a></td><td style='text-align: center;border-bottom: 1px solid #c2c2d6;width: 134px'>" + res.book_appointtime[i] + "</td></tr>"
                 }
                 if (show_more == true) {
-                    html += "<tr><td><a href='/user/pre_borrow_book'>[更多...]</a></td></tr>"
+                    html += "<tr><td><a href='/user/account?choose=my_pre_borrow&mark=1'>[更多...]</a></td></tr>"
                 }
                 $("#my_pre_borrow").html(html)
             }else {
@@ -85,7 +85,7 @@ $(document).ready(function () {
                     html += "<td style='text-align: left;width: 550px;border-bottom: 1px solid #c2c2d6;max-width: 550px;'>"+res.msg[i]+"</td></tr>"
                 }
                 if (show_more == true) {
-                    html += "<tr><td><a href='/user/my_msg'>[更多...]</a></td></tr>"
+                    html += "<tr><td><a href='/user/account?choose=my_msg&mark=1'>[更多...]</a></td></tr>"
                 }
                 $("#my_msg").html(html)
             }else {
@@ -115,7 +115,7 @@ $(document).ready(function () {
                     html += "<td style='text-align: left;width: 415px;border-right: 1px solid #c2c2d6;border-bottom: 1px solid #c2c2d6;max-width: 415px;'><a style='color: #0f0f0f' href='/library/books/" + res.book_bid[i] + "'>" + res.book_name[i] + "</a></td><td style='text-align: center;border-bottom: 1px solid #c2c2d6;width: 134px'>" + res.book_borrowtime[i] + "</td></tr>"
                 }
                 if (show_more == true) {
-                    html += "<tr><td><a href='/user/borrow_book'>[更多...]</a></td></tr>"
+                    html += "<tr><td><a href='/user/account?choose=my_fav&mark=1'>[更多...]</a></td></tr>"
                 }
                 $("#my_borrow").html(html)
             }else {
