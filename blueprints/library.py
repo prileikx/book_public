@@ -1,8 +1,8 @@
 import datetime
 from config import img_path
-from api import check_user_limits, generate_photo, check_user_is_true
+from .api import check_user_limits, generate_photo, check_user_is_true
 from flask import Blueprint, request, render_template, session
-from Model import book_list, UserModel, book_list_Form, book_favourite, book_borrow
+from .Model import book_list, UserModel, book_list_Form, book_favourite, book_borrow
 from blueprints.exts import db
 from sqlalchemy import and_
 import decimal
@@ -209,7 +209,7 @@ def add_pre_borrow():
                         borrow_msg.book_status = 1
                         db.session.commit()
                         db.session.close()
-                        return {"status": [200], "message": ["成功预约图书"],
+                        return {"status": [200], "message": ["成功预约图书,预约有效期为3天,请及时去图书馆借阅"],
                                 "appointment_time": [appointment_time.strftime("%Y/%m/%d, %H:%M:%S")]}
             elif borrow_msg.book_status == 1:
                 if (datetime.datetime.now() - borrow_msg.appointment_time).total_seconds() < 60 * 60 * 24 * 3:
@@ -227,7 +227,7 @@ def add_pre_borrow():
                             borrow_msg.book_status = 1
                             db.session.commit()
                             db.session.close()
-                            return {"status": [200], "message": ["成功预约图书"],
+                            return {"status": [200], "message": ["成功预约图书,预约有效期为3天,请及时去图书馆借阅"],
                                     "appointment_time": [appointment_time.strftime("%Y/%m/%d, %H:%M:%S")]}
     else:
         return {"status": [502], "message": [check]}

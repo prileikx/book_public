@@ -3,7 +3,7 @@ import config
 from blueprints import user_bp
 from blueprints import api_bp, library_bp
 from blueprints.exts import db, mail
-from Model import book_list
+from blueprints.Model import book_list
 
 app = Flask(__name__)
 app.config.from_object(config)

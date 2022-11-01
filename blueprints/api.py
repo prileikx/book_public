@@ -3,7 +3,7 @@ import random
 from flask import Blueprint, Response, request, session
 from blueprints.exts import mail
 from flask_mail import Message
-from Model import captchaModel, UserModel, unameCheck, book_list,captcha_for_change_email, emailCheck, book_borrow, book_favourite, user_msg
+from .Model import captchaModel, UserModel, unameCheck, book_list,captcha_for_change_email, emailCheck, book_borrow, book_favourite, user_msg
 from blueprints.exts import db
 import datetime
 from PIL import Image, ImageDraw, ImageFont
@@ -415,6 +415,7 @@ def pre_borrow_book_msg():
             book_name = []
             book_bid = []
             list_number = 0
+            db.session.expire_on_commit = False
             for book in books:
                 # 检查图书预约信息是否过期,如果过期就往信息里添加消息,并且把书籍状态设为0
                 if (datetime.datetime.now() - book.appointment_time).total_seconds() > 60 * 60 * 24 * 3:

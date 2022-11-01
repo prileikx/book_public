@@ -6,7 +6,7 @@ $(document).ready(function () {
     }, function (response) {
         if (response.status == "302") {
             swal.fire({
-                title: "用户验证错误或尚未登录,请重新登录",
+                title: "用户验证错误或尚未登录或账户在其他地方登录,请重新登录",
                 icon: 'error',
                 type: 'error',
                 allowOutsideClick: false,

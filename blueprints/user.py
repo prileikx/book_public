@@ -2,9 +2,9 @@ from flask import Blueprint, request, render_template, session
 import datetime
 from blueprints.exts import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from Model import UserModel, registerForm, captchaModel, unameCheck, usernameCheck, book_list, user_msg, book_borrow, \
+from .Model import UserModel, registerForm, captchaModel, unameCheck, usernameCheck, book_list, user_msg, book_borrow, \
     book_favourite,captcha_for_change_email
-from api import check_user_is_true
+from .api import check_user_is_true
 from sqlalchemy import and_, desc,or_
 
 bp = Blueprint("user", __name__, url_prefix="/user")
