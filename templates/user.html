@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}用户信息{% endblock %}
+
+{% block head %}
+    <script src="{{ url_for('static',filename="/js/user.js") }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename="/css/user.css") }}">
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="col-md-12">
+            <img src="/static/upload/user/user_binner.jpg" style="width: 1110px;">
+        </div>
+    </div>
+    <div class="container" style="background-color: #f0f0f5;width: 1110px;min-height: 500px">
+        <div class="col-md-1"></div>
+        <div class="col-md-2" id="choose_list" style="margin-top: 30px;">
+            <div id="user_msg">
+                用户信息
+            </div>
+            <div id="account_manage">
+                账户管理
+            </div>
+            <div id="my_fav">
+                我的收藏
+            </div>
+            <div id="my_pre_borrow">
+                我的预约
+            </div>
+            <div id="my_borrow">
+                我的借阅
+            </div>
+            <div id="my_msg">
+                我的消息
+            </div>
+        </div>
+        <div class="col-md-9" style="margin-top: 30px;" id="show_msg">
+            {% if data.status == 200 %}
+                <table class="user_table">
+                    <tr>
+                        <td>UID:</td>
+                        <td>{{ data.uid }}</td>
+                    </tr>
+                    <tr>
+                        <td>用户名:</td>
+                        <td>{{ data.uname }}</td>
+                    </tr>
+                    <tr>
+                        <td>用户组:</td>
+                        <td>{{ data.u_group }}</td>
+                    </tr>
+                    <tr>
+                        <td>邮箱:</td>
+                        <td>{{ data.email }}</td>
+                    </tr>
+                </table>
+                <table class="user_table">
+                    <tr>
+                        <td>当前借阅的书籍数量:</td>
+                        <td>{{ data.borrow_book_number }}</td>
+                    </tr>
+                    <tr>
+                        <td>当前收藏的书籍数量:</td>
+                        <td>{{ data.fav_book_number }}</td>
+                    </tr>
+                </table>
+            {% endif %}
+                    {% if data.status == 202 %}
+                <table class="user_table">
+                    <tr>
+                        <td>用户名:</td>
+                        <td>{{ data.uname }}<button class="btn btn-default" id="change_username_btn">修改用户名</button></td>
+                    </tr>
+                    <tr>
+                        <td>邮箱:</td>
+                        <td>{{ data.email }}<button class="btn btn-default" id="change_email_btn">修改邮箱</button></td>
+                    </tr>
+                    <tr>
+                        <td>密码:</td>
+                        <td>
+                            <button class="btn btn-default" id="change_password_btn">修改密码</button>
+                        </td>
+                    </tr>
+                </table>
+            {% endif %}
+            {% if data.status == 203 %}
+                <div style="display: inline-block">
+                    <table>
+                        <tr style="min-width: 60px;">图书编号</tr>
+                        {% for book_bid in data.book_bid %}
+                            <tr>
+                                <td style="border: 1px solid black;min-width: 56px">{{ book_bid }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div style="display: inline-block">
+                    <table>
+                        <tr style="min-width: 300px">书籍名称</tr>
+                        {% for bname in data.book_name %}
+                            <tr>
+                                <td style="border: 1px solid black">
+                                    <a class="fav_bname" style="color: black">
+                                    {{ bname }}
+                                        </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div style="display: inline-block">
+                    <table>
+                        <tr style="min-width: 200px">书籍收藏时间</tr>
+                        {% for bapt in data.book_fav_time %}
+                            <tr>
+                                <td style="text-align: center;border: 1px solid black">{{ bapt }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <script>
+                $(document).ready(function () {
+                    $.get("/user/account",{"choose":"my_fav","mark":"js"},function (res) {
+                        countb =  {{ data.countb }}
+                        for (i = 0; i <countb; i++) {
+                            urlset = "/library/books/"+res.book_bid[i]
+                            console.log(res.book_bid[i])
+                            fav_bname=$(".fav_bname:eq("+i+")").attr("href",urlset)
+                        }
+                    })
+                })
+                </script>
+            {% endif %}
+            {% if data.status == 204 %}
+                <div style="display: inline-block">
+                    <table>
+                        <tr style="min-width: 60px">图书编号</tr>
+                        {% for book_bid in data.book_bid %}
+                            <tr>
+                                <td style="border: 1px solid black;min-width: 56px">{{ book_bid }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div style="display: inline-block">
+                    <table>
+                        <tr style="min-width: 300px">书籍名称</tr>
+                        {% for bname in data.book_name %}
+                            <tr>
+                                <td style="border: 1px solid black">
+                                    <a class="pre_borrow_bname" style="color: black">
+                                    {{ bname }}
+                                        </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div style="display: inline-block">
+                    <table>
+                        <tr style="min-width: 200px">书籍预约时间</tr>
+                        {% for bapt in data.book_appointtime %}
+                            <tr>
+                                <td style="text-align: center;border: 1px solid black">{{ bapt }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <script>
+                $(document).ready(function () {
+                    $.get("/user/account",{"choose":"my_pre_borrow","mark":"js"},function (res) {
+                        countb =  {{ data.countb }}
+                        for (i = 0; i <countb; i++) {
+                            urlset = "/library/books/"+res.book_bid[i]
+                            console.log(res.book_bid[i])
+                            fav_bname=$(".pre_borrow_bname:eq("+i+")").attr("href",urlset)
+                        }
+                    })
+                })
+                </script>
+            {% endif %}
+            {% if data.status == 205 %}
+                <div style="display: inline-block">
+                    <table>
+                        <tr style="min-width: 60px">图书编号</tr>
+                        {% for book_bid in data.book_bid %}
+                            <tr>
+                                <td style="min-width: 56px;border: 1px solid black">{{ book_bid }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div style="display: inline-block">
+                    <table>
+                        <tr style="min-width: 300px">书籍名称</tr>
+                        {% for bname in data.book_name %}
+                            <tr>
+                                <td style="border: 1px solid black">
+                                    <a class="borrow_bname" style="color: black">
+                                    {{ bname }}
+                                        </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div style="display: inline-block">
+                    <table>
+                        <tr style="min-width: 200px">书籍借阅时间</tr>
+                        {% for bapt in data.book_borrowtime %}
+                            <tr>
+                                <td style="text-align: center;border: 1px solid black">{{ bapt }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+{#                <div style="display: inline-block">#}
+{#                    <table>#}
+{#                        <tr style="min-width: 200px">书籍归还时间</tr>#}
+{#                        {% for bapt in data.book_back_time %}#}
+{#                            <tr>#}
+{#                                <td style="text-align: center;border: 1px solid black">{{ bapt }}</td>#}
+{#                            </tr>#}
+{#                        {% endfor %}#}
+{#                    </table>#}
+{#                </div>#}
+                <script>
+                $(document).ready(function () {
+                    $.get("/user/account",{"choose":"my_borrow","mark":"js"},function (res) {
+                        countb =  {{ data.countb }}
+                        for (i = 0; i <countb; i++) {
+                            urlset = "/library/books/"+res.book_bid[i]
+                            console.log(res.book_bid[i])
+                            fav_bname=$(".borrow_bname:eq("+i+")").attr("href",urlset)
+                        }
+                    })
+                })
+                </script>
+            {% endif %}
+
+            {% if data.status == 206 %}
+                <div style="display: inline-block">
+                    <table>
+                        <tr style="min-width: 60px;border: 1px solid black;">
+                            <td style="line-height: 25px;">我的消息
+                            </td>
+                        </tr>
+                        {% for message in data.user_msg_list %}
+                            <tr style="border: 1px solid black;border-top: none">
+                                <td style="line-height: 25px;">{{ message }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                <button class="btn btn-warning hidden" id="send_sysmsg">发送系统公告</button>
+                </div>
+
+            {% endif %}
+
+        </div>
+        <script>
+            var status_res =
+            {{ data.status }}
+            if (status_res == 200) {
+                $("#user_msg").attr("style", "background-color: #FFFFFF;")
+            }
+            if (status_res == 202) {
+                $("#account_manage").attr("style", "background-color: #FFFFFF;")
+            }
+            if (status_res == 203) {
+                $("#my_fav").attr("style", "background-color: #FFFFFF;")
+            }
+            if (status_res == 204) {
+                $("#my_pre_borrow").attr("style", "background-color: #FFFFFF;")
+            }
+            if (status_res == 205) {
+                $("#my_borrow").attr("style", "background-color: #FFFFFF;")
+            }
+            if (status_res == 206) {
+                $("#my_msg").attr("style", "background-color: #FFFFFF;")
+            }
+        </script>
+    </div>
+{% endblock %}

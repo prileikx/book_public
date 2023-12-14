@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}{{ data.bname[0] }} - 图书管理系统{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename="books.css") }}">
+    <script src="{{ url_for('static',filename="/js/books.js") }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="col-md-3"><img src="{{ data.psrc[0] }}" style="width: 200px; height:300px" id="photo"></div>
+        <div class="col-md-9" id="book_msg">
+            <div style="min-height: 350px">
+                <table id="book">
+                    <tr>
+                        <td>图书编号:</td>
+                        <td id="bid">{{ data.bid[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>图书名称:</td>
+                        <td>{{ data.bname[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>作者:</td>
+                        <td>{{ data.author[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>出版社:</td>
+                        <td>{{ data.press[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>ISBN:</td>
+                        <td>{{ data.isbn_code[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>分类:</td>
+                        <td>{{ data.book_class[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>价格:</td>
+                        <td>{{ data.price[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>数量:</td>
+                        <td>{{ data.number[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>出版日期:</td>
+                        <td>{{ data.Issue_date[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>简介:</td>
+                        <td>{{ data.introduce[0] }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <button class="btn btn-info hidden" id="appointment_book"></button>
+                <button class="btn btn-success hidden" id="fav_book"></button>
+                <span id="if_fav" style="margin-left: 5px"></span>
+                <span id="pre_borrow" style="margin-left: 5px"></span>
+            </div>
+            <div style="margin-top: 10px" class="hidden" id="admin_btn">
+                <button class="btn btn-info" id="edit_book_btn">编辑图书信息</button>
+                <button class="btn btn-info" id="edit_photo_btn">编辑图书封面</button>
+                <button class="btn btn-primary" id="borrow_book_btn">借阅图书</button>
+                <button class="btn btn-warning" id="back_book_btn">归还图书</button>
+                <button class="btn btn-danger" id="del_book_btn">删除图书</button>
+            </div>
+            <table class="table" hidden style="margin-top: 20px" id="borrow_table">
+
+            </table>
+        </div>
+
+
+    <div class="col-md-6 hidden" id="book_edit_div">
+                <label>书籍封面请在创建完图书之后上传</label>
+            <form>
+                <div class="form-group">
+                    <label>图书名称:</label>
+                    <input type="text" name="bname_edit" class="form-control" placeholder="请输入书籍名称" value="{{ data.bname[0] }}">
+                </div>
+                <div class="form-group">
+                    <label>作者:</label>
+                    <input type="text" name="author_edit" class="form-control" placeholder="请输入作者" value="{{ data.author[0] }}">
+                </div>
+                <div class="form-group">
+                    <label>出版社:</label>
+                    <input type="text" name="press_edit" class="form-control" placeholder="请输入出版社" value="{{ data.press[0] }}">
+                </div>
+                <div class="form-group">
+                    <label>ISBN:</label>
+                    <input type="text" name="isbn_code_edit" class="form-control" placeholder="请输入ISBN书号" value="{{ data.isbn_code[0] }}">
+                </div>
+                <div class="form-group">
+                    <label>分类:</label>
+                    <input type="text" name="book_class_edit" class="form-control" placeholder="请输入分类" value="{{ data.book_class[0] }}">
+                </div>
+                <div class="form-group">
+                    <label>价格:</label>
+                    <input type="text" name="price_edit" class="form-control" placeholder="请输入价格" value="{{ data.price[0] }}">
+                </div>
+                <div class="form-group">
+                    <label>数量:</label>
+                    <input type="text" name="number_edit" class="form-control" placeholder="请输入数量" value="{{ data.number[0] }}">
+                </div>
+                <div class="form-group">
+                    <label>出版日期:</label>
+                    <input type="text" name="Issue_date_edit" class="form-control" placeholder="请输入出版日期" value="{{ data.Issue_date[0] }}">
+                </div>
+                <div class="form-group">
+                    <label>简介:</label>
+                    <textarea placeholder="请输入简介" class="form-control" name="introduce_edit" style="min-height: 100px">{{ data.introduce[0] }}</textarea>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-success" id="edit_book_save_btn" form="f2">保存编辑</button>
+                    <button class="btn btn-info" id="cancel_edit_book_btn" form="f2" style="float:right">取消修改</button>
+                </div>
+            </form>
+    </div>
+    <div class="col-md-3 hidden" id="book_edit_empty"></div>
+    </div>
+{#    <div class="hidden" id="mark">{{ data }}</div>#}
+{% endblock %}

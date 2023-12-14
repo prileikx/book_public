@@ -1,0 +1,20 @@
+.table_ tr td{
+
+}
+#choose_list div:first-child{
+    border-top: 1px solid black;
+}
+#choose_list div{
+    background-color: #DDDDDD;
+    border: 1px solid black;
+    border-top: none;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+}
+#choose_list div:hover{
+    background-color: #BBBBBB;
+}
+.user_table tr td{
+    line-height: 30px;
+}

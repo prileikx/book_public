@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}用户登录{% endblock %}
+
+{% block head %}
+    <script src="{{ url_for('static',filename="/js/login.js") }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4">
+        <form method="post" action="{{ url_for("user.login") }}" id="f1">
+            <div class="form-group">
+                <label>用户名/邮箱/uid:</label>
+                <input type="text" class="form-control" name="uname_login" form="f1">
+            </div>
+            <div class="form-group">
+                <label>密码:</label>
+                <input type="password" form="f1" class="form-control" name="pwd_login">
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="remember_me" form="f1" value="yes"> 记住我(30天内无需再次登录)
+                </label>
+                <a href="{{ url_for("user.change_password") }}" style="float: right">忘记密码</a>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-info btn-block" id="loginbtn" form="f2">登录</button>
+            </div>
+
+            <div style="height: 20px;display: none;background-color:#f5e79e;text-align: center" id="warn"></div>
+        </form>
+    </div>
+
+    <div class="col-md-4"></div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}主页 - 图书管理系统{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename="/css/homepage.css") }}">
+    <script src="{{ url_for('static',filename="/js/homepage.js") }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+    <div class="col-md-12">
+        <img src="{{ url_for('static',filename="/upload/homepage.png") }}" style="height: 200px;width: 1120px">
+    </div>
+
+        <h1 style="text-align: center">欢迎使用图书管理系统</h1>
+        <div class="col-md-6">
+            <div class="box_div">
+                <div class="box_title">我的收藏</div>
+                <div id="my_fav"></div>
+            </div>
+            <div class="box_div">
+                <div class="box_title">我的消息</div>
+                <div id="my_msg"></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box_div">
+                <div class="box_title">我的预约</div>
+                <div id="my_pre_borrow"></div>
+            </div>
+            <div class="box_div">
+                <div class="box_title">我的借阅</div>
+                <div id="my_borrow"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,9 @@
+#book tr td:first-child{
+    width: 150px;
+}
+#book{
+    font-size: 20px;
+}
+#photo{
+    margin-left: 40px;
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename="bootstrap-3.4.1-dist/css/bootstrap.min.css") }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename="sweetalert2.min.css") }}">
+    <script src="{{ url_for('static',filename="bootstrap-3.4.1-dist/js/jquery-3.0.0.js") }}"></script>
+    <script src="{{ url_for('static',filename="bootstrap-3.4.1-dist/js/bootstrap.js") }}"></script>
+    <script src="{{ url_for('static',filename="/js/base.js") }}"></script>
+    <script src="{{ url_for('static',filename="bootstrap-3.4.1-dist/js/jquery.cookie.js") }}"></script>
+    <script src="{{ url_for('static',filename="bootstrap-3.4.1-dist/js/jquery.session.js") }}"></script>
+    <script src="{{ url_for('static',filename="/js/sweetalert2.all.min.js") }}"></script>
+    <style>
+        .btn {
+            border-radius: 0;
+            outline: none;
+        }
+
+        　　.btn.active.focus,
+        　　.btn.active:focus,
+        　　.btn:active.focus,.btn:active:focus,.btn:focus,btn:active,btn:hover{
+            outline: none;
+            box-shadow: none;
+        }
+
+        .dropdown-menu {
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .form-control {
+            border-radius: 0;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+<nav class="navbar navbar-default">
+    <div class="container">
+
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">图书管理系统</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="{{ url_for("homepage") }}">主页<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li><a href="{{ url_for("library") }}">书库</a></li>
+                    <li><a href="{{ url_for("search") }}">搜索</a></li>
+                </ul>
+                <form class="navbar-form navbar-left hidden" id="nav_search" action="/search">
+                    <div class="form-group">
+                        <input type="text" class="form-control hidden" id="page" name="page" value="1">
+                        <input type="text" class="form-control hidden" id="search_text" name="search_text" placeholder="输入内容搜索图书">
+                    </div>
+                    <button class="btn btn-default" id="search" type="submit">搜索</button>
+                    <div class="radio hidden">
+                    <label>
+                        <input type="radio" name="choose" id="optionsRadios1" value="bname" checked>
+                        通过书名查询
+                    </label>
+                </div>
+                </form>
+                <div>
+                    <ul class="nav navbar-nav navbar-right" id="logre" hidden>
+                        <li><a href="{{ url_for("user.login") }}">登录</a></li>
+                        <li><a href="{{ url_for("user.register") }}" id="register">注册</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right" id="logmsg" hidden>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false" id="username"><span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/user/account?choose=user_msg&mark=1">用户信息</a></li>
+                                <li><a href="/user/account?choose=account_manage&mark=1">账户管理</a></li>
+                                <li><a href="/user/account?choose=my_fav&mark=1">我的收藏</a></li>
+                                <li><a href="/user/account?choose=my_pre_borrow&mark=1">我的预约</a></li>
+                                <li><a href="/user/account?choose=my_borrow&mark=1">我的借阅</a></li>
+                                <li><a href="/user/account?choose=my_msg&mark=1">我的消息</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li id="logout"><a href="#">退出登录</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+
+    </div>
+</nav>
+
+{% block body %}{% endblock %}
+
+
+</body>
+</html>
